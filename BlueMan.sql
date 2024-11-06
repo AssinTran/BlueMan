@@ -57,6 +57,7 @@ CREATE TABLE [accounts] (
 	[password] NVARCHAR(32) NOT NULL,
 	[role] NVARCHAR(50),
 	[user_id] NVARCHAR(32) NOT NULL,
+	[accept] BIT NOT NULL DEFAULT true,
 	PRIMARY KEY([id])
 );
 GO
