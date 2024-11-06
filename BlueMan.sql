@@ -1,0 +1,109 @@
+
+CREATE TABLE [products] (
+	[id] NVARCHAR(32) NOT NULL UNIQUE,
+	[name] NVARCHAR(200) NOT NULL,
+	[description] TEXT NOT NULL,
+	[price] FLOAT NOT NULL,
+	[category_id] NVARCHAR(32) NOT NULL,
+	[image] TEXT,
+	[quantity] INT NOT NULL,
+	PRIMARY KEY([id])
+);
+GO
+
+CREATE TABLE [categories] (
+	[id] NVARCHAR(32) NOT NULL UNIQUE,
+	[name] NVARCHAR(150) NOT NULL,
+	PRIMARY KEY([id])
+);
+GO
+
+CREATE TABLE [orders] (
+	[id] NVARCHAR(32) NOT NULL UNIQUE,
+	[date] DATETIME NOT NULL,
+	[user_id] NVARCHAR(32) NOT NULL,
+	[quantity] INT NOT NULL,
+	[status] NVARCHAR(255) CHECK([status] in ('delivered', 'received', 'processing')) NOT NULL,
+	[product_id] NVARCHAR(32) NOT NULL,
+	[price] FLOAT NOT NULL,
+	PRIMARY KEY([id])
+);
+GO
+
+CREATE TABLE [reviews] (
+	[id] NVARCHAR(32) NOT NULL UNIQUE,
+	[user_id] NVARCHAR(32) NOT NULL,
+	[product_id] NVARCHAR(32) NOT NULL,
+	[rating] INT,
+	[content] NVARCHAR(255),
+	[date] DATETIME,
+	PRIMARY KEY([id])
+);
+GO
+
+CREATE TABLE [users] (
+	[id] NVARCHAR(32) NOT NULL UNIQUE,
+	[name] NVARCHAR(100) NOT NULL,
+	[address] NVARCHAR(150) NOT NULL,
+	[email] NVARCHAR(100) NOT NULL,
+	[phone] NVARCHAR(10) NOT NULL,
+	PRIMARY KEY([id])
+);
+GO
+
+CREATE TABLE [accounts] (
+	[id] NVARCHAR(32) NOT NULL UNIQUE,
+	[username] NVARCHAR(20) NOT NULL,
+	[password] NVARCHAR(32) NOT NULL,
+	[role] NVARCHAR(50),
+	[user_id] NVARCHAR(32) NOT NULL,
+	PRIMARY KEY([id])
+);
+GO
+
+CREATE TABLE [carts] (
+	[id] NVARCHAR(32) NOT NULL UNIQUE,
+	[user_id] NVARCHAR(32) NOT NULL,
+	[product_id] NVARCHAR(32) NOT NULL,
+	[quantity] INT NOT NULL,
+	[price] FLOAT NOT NULL,
+	PRIMARY KEY([id])
+);
+GO
+
+ALTER TABLE [orders]
+ADD FOREIGN KEY([product_id]) REFERENCES [products]([id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [products]
+ADD FOREIGN KEY([category_id]) REFERENCES [categories]([id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [reviews]
+ADD FOREIGN KEY([user_id]) REFERENCES [users]([id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [reviews]
+ADD FOREIGN KEY([product_id]) REFERENCES [products]([id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [orders]
+ADD FOREIGN KEY([user_id]) REFERENCES [users]([id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [users]
+ADD FOREIGN KEY([id]) REFERENCES [accounts]([user_id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [accounts]
+ADD FOREIGN KEY([user_id]) REFERENCES [users]([id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [carts]
+ADD FOREIGN KEY([user_id]) REFERENCES [users]([id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [carts]
+ADD FOREIGN KEY([product_id]) REFERENCES [products]([id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
